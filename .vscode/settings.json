@@ -1,2 +1,9 @@
 {
+    "editor.wrappingIndent": "indent",
+    "html.format.indentInnerHtml": true,
+    "html.format.indentHandlebars": true,
+    "csharpfixformat.style.indent.regionIgnored": true,
+    "csharpfixformat.style.indent.switchCaseIgnored": true,
+    "sass.disableAutoIndent": true,
+    "javascript.format.insertSpaceAfterOpeningAndBeforeClosingJsxExpressionBraces": true
 }
