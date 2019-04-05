@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import {BrowserRouter , Route } from 'react-router-dom';
 import AuthorQuiz from './AuthorQuiz';
 import './App.css';
 import * as serviceWorker from './serviceWorker';
@@ -9,7 +10,7 @@ import { shuffle, sample } from 'underscore';
 const authors = [
           {
             name: 'Mark Twain',
-            imageURL: 'images/authors/marktwain.jpg',
+            imageUrl: 'images/authors/marktwain.jpg',
             imageSource: 'Wikimedia Commons',
             books: ['The Adventures of Huckleberry Finn']
           },
@@ -56,8 +57,8 @@ function getTurnData (authors){
     const answer = sample(fourRandomBooks);
     return {
         books: fourRandomBooks,
-        author: authors.find((author) => 
-        author.books.some((title) => 
+        author: authors.find((author) =>
+        author.books.some((title) =>
         title === answer))
     }
 }
@@ -72,9 +73,23 @@ function onAnswerSelected(answer){
     state.highlight = isCorrect ? 'correct' : 'wrong';
     render();
 }
+function AddAuthorForm({match}) {
+  return <div>
+    <h1>Add Author</h1>
+    <p>{JSON.stringify(match)}</p>
+        </div>
+}
 
+function App() {
+  return <AuthorQuiz {...state } onAnswerSelected = { onAnswerSelected } />;
+}
 function render(){
-    ReactDOM.render(<AuthorQuiz {...state} onAnswerSelected={onAnswerSelected} />, document.getElementById('root'));
+  ReactDOM.render(<BrowserRouter>
+    <React.Fragment>
+      <Route exact path="/" component={App} />
+      <Route path="/add" component={AddAuthorForm}/>
+    </React.Fragment>
+  </BrowserRouter>, document.getElementById('root'));
 }
 render();
 
