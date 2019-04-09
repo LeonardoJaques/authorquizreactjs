@@ -1,9 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { connect }from 'react-redux'
 import './App.css';
 import './bootstrap.min.css';
 import './index.css';
 import PropTypes from 'prop-types';
+
 function Hero() {
     return ( <div className="row">
             <div className="jumbotron col-10 offset-1">
@@ -35,11 +37,12 @@ function Turn({author, books, highlight, onAnswerSelected}) {
         <div className="col-4 offset-1">
             <img src={author.imageUrl} className="authorimage" alt="Author"/>
         </div>
-           <div className="col-6"> {books.map((title) => <Book title = {title} key={title} onClick={onAnswerSelected}/>)} </div>
+        <div className="col-6">
+            { books.map((title) => <Book title={ title } key={ title } onClick={ onAnswerSelected } />) } </div>
     </div>)
 }
 
-Turn.prototypes = {
+Turn.propTypes = {
     author: PropTypes.shape({
       name: PropTypes.string.isRequired,
       imageUrl: PropTypes.string.isRequired,
@@ -48,7 +51,7 @@ Turn.prototypes = {
     }),
     books: PropTypes.arrayOf(PropTypes.string).isRequired,
     onAnswerSelected: PropTypes.func.isRequired,
-    highlight: PropTypes.string
+    highlight: PropTypes.string.isRequired
 };
 
 function Continue({ show, onContinue }) {
@@ -71,21 +74,37 @@ function Footer() {
         </div>
 
     </div>)
-}
+};
 
-function AuthorQuiz ({turnData, highlight, onAnswerSelected, onContinue}) {
-       return (
+function mapStateToProps(state) {
+    return {
+        turnData: state.turnData,
+        highlight: state.highlight
+    };
+};
+
+function mapDispatchToProps(dispatch) {
+    return {
+        onAnswerSelected: (answer) => {
+            dispatch({ type: 'ANSWER_SELECTED', answer });
+        },
+        onContinue: () => {
+            dispatch({ type: 'CONTINUE '})
+        }
+
+    };
+};
+
+const AuthorQuiz = connect(mapStateToProps, mapDispatchToProps)(
+    function ({ turnData, highlight, onAnswerSelected, onContinue }) {
+        return (
             <div className="container-fluid">
-                <Hero/>
-                <Turn{...turnData} highlight={highlight} onAnswerSelected ={onAnswerSelected}/>
-               <Continue show ={ highlight === 'correct' } onContinue={onContinue} />
-               <p><Link to="/add">Add an author</Link> </p>
-                <Footer/>
+                <Hero />
+                <Turn { ...turnData } highlight={ highlight } onAnswerSelected={ onAnswerSelected } />
+                <Continue show={ highlight === 'correct' } onContinue={ onContinue } />
+                <p><Link to="/add">Add an author</Link> </p>
+                <Footer />
             </div>
-       )
-
-
-
-}
-
+        )
+    })
 export default AuthorQuiz;
